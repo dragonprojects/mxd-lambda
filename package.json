@@ -1,0 +1,25 @@
+{
+  "name": "mxd-lambda",
+  "description": "Provide express like API and using middlewares for AWS Lambda",
+  "version": "1.0.0",
+  "homepage": "http://github.com/maxdome/lambda",
+  "readmeFilename": "README.md",
+  "main": "build/lib.js",
+  "scripts": {
+    "build": "babel src -d dest",
+    "lint": "eslint src",
+    "prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.7.5",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-plugin-transform-strict-mode": "^6.11.3",
+    "eslint": "^3.5.0",
+    "eslint-config-maxdome": "^2.0.0",
+    "eslint-plugin-import": "^2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxdome/lambda.git"
+  }
+}
