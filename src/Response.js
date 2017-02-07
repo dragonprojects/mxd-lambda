@@ -46,7 +46,7 @@ class Response {
     this.context.succeed({
       body: this.body,
       headers: this.headers,
-      status: this.statusCode
+      statusCode: this.statusCode
     });
     return this;
   }

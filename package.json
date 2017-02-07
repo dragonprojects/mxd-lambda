@@ -1,7 +1,7 @@
 {
   "name": "mxd-lambda",
   "description": "Provide express like API and using middlewares for AWS Lambda",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "http://github.com/maxdome/lambda",
   "readmeFilename": "README.md",
   "main": "build/lib.js",
