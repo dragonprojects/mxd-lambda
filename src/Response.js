@@ -1,7 +1,7 @@
 class Response {
   constructor(context) {
-    this.body = '';
     this.context = context;
+    this.body = '';
     this.headers = {};
     this.statusCode = 204;
   }

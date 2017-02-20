@@ -1,5 +1,6 @@
 class Request {
   constructor(event) {
+    this.event = event;
     if (event.body) {
       this.body = JSON.parse(event.body);
     }
