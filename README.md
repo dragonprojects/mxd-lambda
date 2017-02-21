@@ -1,6 +1,6 @@
 # Example
 
-```
+```javascript
 const lambda = require('mxd-lambda')(logger);
 
 lambda.use(require('mxd-cors')());
