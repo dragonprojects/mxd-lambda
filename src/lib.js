@@ -3,12 +3,21 @@ const Response = require('./Response');
 
 const stack = [];
 
-const handle = (name, controller) => async (event, context) => {
+const handle = (name, middlewares, controller) => async (event, context) => {
+  // Middlewares are optional to have the same interface like express
+  if (!controller) {
+    controller = middlewares;
+    middlewares = [];
+  }
+
   const req = new Request(event);
   const res = new Response(context);
 
   // We need to clone the array used by all handle
-  const stackWithController = stack.slice(0);
+  let stackWithController = stack.slice(0);
+
+  // Add the controller specific middlewares
+  stackWithController = stackWithController.concat(middlewares);
 
   // A controller is also a middleware
   stackWithController.push(async (req, res, next) => controller(req, res));
