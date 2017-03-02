@@ -38,7 +38,6 @@ class Response {
     if (typeof body !== 'string') {
       this.body = JSON.stringify(body);
     }
-    this.end();
     return this;
   }
 

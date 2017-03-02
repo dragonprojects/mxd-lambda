@@ -1,34 +1,41 @@
 const Request = require('./Request');
 const Response = require('./Response');
 
-module.exports = logger => {
-  const middlewares = [];
-  return {
-    use: (middleware) => {
-      middlewares.push(middleware);
-    },
-    function: (name, controller) => async (event, context) => {
-      const req = new Request(event);
-      logger.debug(`Request for '${name}' with headers '${JSON.stringify(req.headers)}' and body '${JSON.stringify(req.body)}'`);
-      const res = new Response(context);
-      try {
-        middlewares.forEach(async (middleware) => {
-          await new Promise((resolve, reject) => {
-            middleware(req, res, (err) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve();
-              }
-            });
-          });
-        });
-        await controller(req, res);
-      } catch (e) {
-        logger.warn(`Error: ${e.message}`);
-        res.status(400).send(e.message);
-      }
-      logger.debug(`Response for '${name}' with statusCode '${res.statusCode}', headers '${JSON.stringify(res.headers)}' and body '${JSON.stringify(res.body)}'`);
+const stack = [];
+
+const handle = (name, controller) => async (event, context) => {
+  const req = new Request(event);
+  const res = new Response(context);
+
+  // We need to clone the array used by all handle
+  const stackWithController = stack.slice(0);
+
+  // A controller is also a middleware
+  stackWithController.push(async (req, res, next) => controller(req, res));
+
+  // Index for the current middleware
+  let idx = -1;
+  async function next(err) {
+    if (err) {
+      throw err;
     }
-  };
+
+    // We can never overflow due the fact that the controller is not calling next()
+    ++idx;
+    await stackWithController[idx](req, res, next);
+  }
+
+  // The central try/catch sending the error preventing unhandled errors
+  try {
+    await next();
+  } catch (err) {
+    res.status(400).send(err);
+  }
+
+  // Always finalize the lambda at the end
+  res.end();
 };
+
+const use = middleware => stack.push(middleware);
+
+module.exports = { handle, use };
