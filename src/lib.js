@@ -2,39 +2,40 @@ const Request = require('./Request');
 const Response = require('./Response');
 
 const stack = [];
-const use = middleware => stack.push(middleware);
 
 const handle = (name, controller) => async (event, context) => {
   const req = new Request(event);
   const res = new Response(context);
 
+  // We need to clone the array used by all handle
+  const stackWithController = stack.slice(0);
+
   // A controller is also a middleware
-  const stackWithController = stack;
-  // stackWithController.push(async (req, res, next) => await controller(req, res));
+  stackWithController.push(async (req, res, next) => controller(req, res));
 
   // Index for the current middleware
   let idx = -1;
-
-  await next();
-  async function next(error) {
-    if (error) {
-      return res.status(400).send(error);
+  async function next(err) {
+    if (err) {
+      throw err;
     }
 
-    idx++;
-    if (idx >= stackWithController.length) {
-      // We are done, work from inner to outer again
-      return;
-    }
-
+    // We can never overflow due the fact that the controller is not calling next()
+    ++idx;
     await stackWithController[idx](req, res, next);
   }
 
-  // We need to call a end() again otherwise the response fail's
+  // The central try/catch sending the error preventing unhandled errors
+  try {
+    await next();
+  } catch (err) {
+    res.status(400).send(err);
+  }
+
+  // Always finalize the lambda at the end
   res.end();
 };
 
-module.exports = {
-  use,
-  handle
-};
+const use = middleware => stack.push(middleware);
+
+module.exports = { handle, use };
