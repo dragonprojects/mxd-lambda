@@ -17,7 +17,11 @@ const handle = (name, middlewares, controller) => async (event, context) => {
   let stackWithController = stack.slice(0);
 
   // Add the controller specific middlewares
-  stackWithController = stackWithController.concat(middlewares);
+  if (Array.isArray(middlewares)) {
+    stackWithController = stackWithController.concat(middlewares);
+  } else {
+    stackWithController.push(middlewares);
+  }
 
   // A controller is also a middleware
   stackWithController.push(async (req, res, next) => controller(req, res));
