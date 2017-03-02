@@ -1,3 +1,7 @@
 {
-  "extends": "maxdome/node"
+  "extends": "maxdome/node",
+  "rules": {
+    "no-shadow": "off",
+    "no-plusplus": "off"
+  }
 }
