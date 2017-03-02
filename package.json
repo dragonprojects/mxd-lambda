@@ -2,7 +2,7 @@
   "name": "mxd-lambda",
   "description": "Provide express like API and using middlewares for AWS Lambda",
   "version": "2.0.0",
-  "homepage": "http://github.com/maxdome/lambda",
+  "homepage": "http://github.com/maxdome/mxd-lambda",
   "readmeFilename": "README.md",
   "main": "build/lib.js",
   "scripts": {
@@ -19,6 +19,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/maxdome/lambda.git"
+    "url": "https://github.com/maxdome/mxd-lambda.git"
   }
 }
